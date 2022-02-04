@@ -1,6 +1,5 @@
 # Automation Command
- 
-## Bug Bounty TIPS and Usage of tools + One Liner TIPS :
+# Bug Bounty TIPS and Usage of tools + One Liner TIPS :
 
 ```bash
 amass intel -cidr 127.0.0.1/21 | subfinder -silent -all -o subdo.txt | rustscan -a subdo.txt -r 1-65535 | grep Open | tee open_ports.txt | sed 's/Open //' | httpx -silent | nuclei -t ~/nuclei-templates
