@@ -46,9 +46,19 @@ xargs -a cidr.txt -I@ bash -c 'amass intel -active -cidr @' | subfinder -all -si
 ```bash
 cat subs | httpx -pa | grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' > ips
 
-httpx -l ips.txt -ports - -o ips_ports.txt
+httpx -l ips -ports - -o ips_ports
 
-nuclei -l ips_ports.txt -t nuclei-templates/
+nuclei -l ips_ports -t nuclei-templates/
+```
+
+---
+
+```bash
+cat subs | httpx -pa | grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' > ips
+
+httpx -l ips -ports - -o ips_ports
+
+rustscan -a ips_ports -r 1-65535 | grep Open | tee open_ports.txt | sed 's/Open //' | httpx -silent | nuclei -t ~/nuclei-templates/
 ```
 
 ---
