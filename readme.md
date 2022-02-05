@@ -43,6 +43,16 @@ xargs -a cidr.txt -I@ bash -c 'amass intel -active -cidr @' | subfinder -all -si
  ```
 ---
 
+```bash
+cat subs | httpx -pa | grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' > ips
+
+httpx -l ips.txt -ports - -o ips_ports.txt
+
+nuclei -l ips_ports.txt -t nuclei-templates/
+```
+
+---
+
 ### ONE-LINER *RECON* for FUZZ XSS :
 
 ```sh
